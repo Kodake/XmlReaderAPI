@@ -1,6 +1,5 @@
 ﻿using BackEnd.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 using System.Xml.Linq;
 
 namespace BackEnd.Controllers
@@ -9,11 +8,13 @@ namespace BackEnd.Controllers
     [ApiController]
     public class XmlReaderController : ControllerBase
     {
+        public List<string> errors = new();
+
         // GET: api/XmlReader
         [HttpGet]
         public ActionResult<XElement?> GetXmlContent()
         {
-            var fileName = @"C:\Users\Kodake\Desktop\XmlReaderAPI\Beers.xml";
+            var fileName = @"C:\Users\Kodake\Desktop\XmlReaderAPI\BackEnd\BackEnd\Beers.xml";
 
             XElement storedXML = XElement.Load(fileName);
 
@@ -25,6 +26,13 @@ namespace BackEnd.Controllers
                                 Style = x.Attribute("style")?.Value,
                             };
 
+            ValidateNodes(listBeers);
+
+            if (errors.Count > 0)
+            {
+                return BadRequest(errors);
+            }
+
             Beers beers = new()
             {
                 ListBeers = listBeers,
@@ -32,6 +40,24 @@ namespace BackEnd.Controllers
             };
 
             return Ok(beers);
+        }
+
+        private void ValidateNodes(IEnumerable<Beer> listBeers)
+        {
+            if (listBeers.Any(x => string.IsNullOrEmpty(x.Name)))
+            {
+                errors.Add("A name for the beer cannot be null or empty");
+            }
+
+            if (listBeers.Any(x => x.Price == 0))
+            {
+                errors.Add("A price for the beer cannot be zero");
+            }
+
+            if (listBeers.Any(x => string.IsNullOrEmpty(x.Style)))
+            {
+                errors.Add("An style beer cannot be null or empty");
+            }
         }
     }
 }
