@@ -1,22 +1,25 @@
 ﻿using BackEnd.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Text;
 using System.Xml.Linq;
 
 namespace BackEnd.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Produces("application/json")]
     public class XmlReaderController : ControllerBase
     {
         public List<string> errors = new();
 
         // GET: api/XmlReader
         [HttpGet]
-        public ActionResult<XElement?> GetXmlContent()
+        public ActionResult<XElement?> GetXmlContent(string base64Data)
         {
-            var fileName = @"C:\Users\Kodake\Desktop\XmlReaderAPI\BackEnd\BackEnd\Beers.xml";
+            byte[] base64EncodedBytes = Convert.FromBase64String(base64Data);
+            string xmlFile = Encoding.UTF8.GetString(base64EncodedBytes);
 
-            XElement storedXML = XElement.Load(fileName);
+            XElement storedXML = XElement.Parse(xmlFile);
 
             var listBeers = from x in storedXML.Element("beers")?.Elements("beer")
                             select new Beer
