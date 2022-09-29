@@ -14,7 +14,7 @@ namespace BackEnd.Controllers
 
         // GET: api/XmlReader
         [HttpGet]
-        public ActionResult<XElement?> GetXmlContent(string base64Data)
+        public ActionResult<XElement?> GetXmlContent([FromHeader] string base64Data)
         {
             byte[] base64EncodedBytes = Convert.FromBase64String(base64Data);
             string xmlFile = Encoding.UTF8.GetString(base64EncodedBytes);
