@@ -7,9 +7,4 @@
 		<beer price="400" style="stout">Double chocolate</beer>
 		<beer price="500" style="jumbo">Presidente</beer>
 	</beers>
-	<totalPrice>
-		<total>
-			1500
-		</total>
-	</totalPrice>
 </store>
